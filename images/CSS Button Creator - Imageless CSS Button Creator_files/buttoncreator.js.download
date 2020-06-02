@@ -1,0 +1,854 @@
+classText = 'BUTTON_'+makeid();
+but = {};
+but.sty = [];
+but.sty_css = '';
+but.sty_hov_css = '';
+but.pix = ['font-size', 'border-radius', 'padding', 'padding-top', 'padding-right', 'height', 'line-height','width', 'padding-bottom', 'padding-left'];
+but.grad = ['bg-start-gradient', 'bg-end-gradient', 'bg-end-gradient-hover', 'bg-end-gradient-hover'];
+
+// Call template init (optional, but faster if called manually)
+$.template.init();
+
+// Progress
+$('.demo-progress').progress();
+
+$('#class_text').val(classText);
+
+// Slider
+$('.demo-slider').slider();
+
+$('#bgWhite').click(function () {
+    $('#bgContainer').removeClass("scratch-metal");
+    $('#bgContainer').removeClass("linen");
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').css("background-color","white");
+});
+
+$('#bgBlack').click(function () {
+    $('#bgContainer').removeClass("scratch-metal");
+    $('#bgContainer').removeClass("linen");
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').css("background-color","black");
+});
+
+$('#bgRed').click(function () {
+    $('#bgContainer').removeClass("scratch-metal");
+    $('#bgContainer').removeClass("linen");
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').css("background-color","#DD380D");
+});
+
+$('#bgOrange').click(function () {
+    $('#bgContainer').removeClass("scratch-metal");
+    $('#bgContainer').removeClass("linen");
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').css("background-color","#FFAE00");
+});
+
+$('#bgGreen').click(function () {
+    $('#bgContainer').removeClass("scratch-metal");
+    $('#bgContainer').removeClass("linen");
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').css("background-color","#99C624");
+});
+
+$('#bgBlue').click(function () {
+    $('#bgContainer').removeClass("scratch-metal");
+    $('#bgContainer').removeClass("linen");
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').css("background-color","#0059A0");
+});
+
+$('#Carbon').click(function () {
+    $('#bgContainer').removeClass("scratch-metal");
+    $('#bgContainer').removeClass("linen");
+    $('#bgContainer').addClass("carbon");
+    $('#bgContainer').css("background-color","#3c4044 ");
+
+});
+
+$('#Metal').click(function () {
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').removeClass("linen");
+    $('#bgContainer').addClass("scratch-metal");
+});
+
+$('#Linen').click(function () {
+    $('#bgContainer').removeClass("carbon");
+    $('#bgContainer').removeClass("scratch-metal");
+    $('#bgContainer').addClass("linen");
+});
+
+
+
+
+
+$('#accordion').find('input[type="text"], select').not(':disabled').each(function()
+{
+    var cssProp = $(this).attr('cssName');
+    but.sty[cssProp] = $(this).val();
+});
+
+$('#fs_width').hide();
+$('#fs_height').hide();
+
+$('#showDisabledBorder').hide();
+
+var font_size;
+
+
+
+
+$(document).on('keyup', 'input', function(event)
+{
+    $(".generated_button").text($('#title_text').val());
+    classText = ($('#class_text').val());
+    but.update();
+}).keyup();
+
+$(document).on('keyup', 'textarea', function(event)
+{
+    $(".generated_button").text($('#title_text').val());
+    classText = ($('#class_text').val());
+    but.update();
+}).keyup();
+
+$(document).on('change', 'input, select', function(event)
+{
+
+
+//			$('.generated_button').text($('#title_text').val());
+
+    but.update();
+
+});
+
+
+function resetHover() {
+    var bgStartGradient = $('#bg-start-gradient').val();
+    var bgEndGradient = $('#bg-end-gradient').val();
+    var bgColor = $('#bg-color').val();
+
+    var borderColor = $('#borderColor').val();
+    var borderWidth = $('#border-width').val();
+    var borderRadius = $('#border-radius').val();
+    var borderStyle = $('#border-style').val();
+
+
+
+    $('#bg-start-gradient-hover').val(bgStartGradient);
+    $('#bg-start-gradient-hover').css('background-color',bgStartGradient);
+    $('#bg-end-gradient-hover').val(bgEndGradient);
+    $('#bg-end-gradient-hover').css('background-color',bgEndGradient);
+    $('#bg-color-hover').val(bgColor);
+    $('#bg-color-hover').css('background-color',bgColor);
+
+
+    $('#border-color-hover').val(borderColor);
+    $('#border-color-hover').css('background-color',borderColor);
+
+
+
+    $("#border-width-hover").val(borderWidth).change();
+    $("#border-radius-hover").val(borderRadius).change();
+    $("#border-style-hover").val(borderStyle).change();
+
+
+    but.update();
+}
+
+but.prepCode = function()
+{
+    but.sty = {};
+    but.styMark = '';
+    but.styHovMark = '';
+    //but.styActMark = '';
+
+
+    $('#accordion').find('input[type="text"], select').not(':disabled').each(function(){
+        var cssProp = $(this).attr('cssName');
+        but.sty[cssProp] = $(this).val();
+    });
+
+    var backgroundType = $("input[name=background-type]:checked").val();
+    if (backgroundType == "gradient")
+    {
+        $('#backgroundGradientStartContainer').show();
+        $('#backgroundGradientEndContainer').show();
+        $('#backgroundColorContainer').hide();
+    }
+    if (backgroundType == "solid")
+    {
+        $('#backgroundGradientStartContainer').hide();
+        $('#backgroundGradientEndContainer').hide();
+        $('#backgroundColorContainer').show();
+        delete but.sty['bg-start-gradient'];
+        delete but.sty['bg-end-gradient'];
+        delete but.sty['bg-color'];
+        but.sty['background-color'] = $("#bg-color").val();
+    }
+
+
+
+    var backgroundTypeHover = $("input[name=background-type-hover]:checked").val();
+    if (backgroundTypeHover == "gradient")
+    {
+        $('#backgroundGradientStartContainer-hover').show();
+        $('#backgroundGradientEndContainer-hover').show();
+        $('#backgroundColorContainer-hover').hide();
+
+        delete but.sty['bg-color-hover'];
+    }
+    if (backgroundTypeHover == "solid")
+    {
+        $('#backgroundGradientStartContainer-hover').hide();
+        $('#backgroundGradientEndContainer-hover').hide();
+        $('#backgroundColorContainer-hover').show();
+        delete but.sty['bg-start-gradient-hover'];
+        delete but.sty['bg-end-gradient-hover'];
+        delete but.sty['background-hover'];
+        delete but.sty['bg-color-hover'];
+        but.styHovMark += but.renLine('background', $("#bg-color-hover").val());
+        //but.sty['background-color'] = $("#bg-color-hover").val();
+    }
+
+
+    if ($("input[id=Switch_hover]:checked").val() == 1)
+    {
+        $('#hideSlide_hover').show();
+        $('#showDisabledHover').hide();
+
+    } else {
+        $('#hideSlide_hover').hide();
+        $('#showDisabledHover').show();
+    }
+
+
+
+    var buttonSizeType = $("input[name=button-size-type]:checked").val();
+    if (buttonSizeType == 1)
+    {
+        $('#fs_width').hide();
+        delete but.sty['width'];
+        $('#fs_height').hide();
+        delete but.sty['height'];
+    }
+    if (buttonSizeType == 2)
+    {
+        $('#fs_width').show();
+        $('#fs_height').show();
+    }
+
+
+    if ($("input[id=Switch_fontSizePX]:checked").val() == 1) {
+        $('#hideSlide_fontSizePX').fadeIn();
+    } else {
+        delete but.sty['font-size'];
+        $('#hideSlide_fontSizePX').fadeOut();
+    }
+
+    if ($("input[id=Switch_fontWeight]:checked").val() == 1) {
+        $('#hideSlide_fontWeight').fadeIn();
+    } else {
+        delete but.sty['font-weight'];
+        $('#hideSlide_fontWeight').fadeOut();
+    }
+
+
+
+    // run the box-shadow code
+
+
+    var boxShadowType = $("input[name=box-shadow-type]:checked").val();
+    var bst, bsc, bsh, bsv, bsb, bss;
+    if((bst = boxShadowType) &&
+        (bsc = but.sty['box-shadow-color']) &&
+        (bsh = but.sty['box-shadow-horizontal']) &&
+        (bsv = but.sty['box-shadow-vertical']) &&
+        (bsb = but.sty['box-shadow-blur']) &&
+        (bss = but.sty['box-shadow-spread'])) {
+        if (bst == 'inset') {
+            bst = 'inset ';
+        } else {
+            bst = '';
+        }
+        but.sty['box-shadow'] = bst + bsh + 'px ' + bsv + 'px ' + bsb + 'px ' + bss + 'px ' + bsc;
+        but.sty['-webkit-box-shadow'] = bst + bsh + 'px ' + bsv + 'px ' + bsb + 'px ' + bss + 'px ' + bsc;
+        but.sty['-moz-box-shadow'] = bst + bsh + 'px ' + bsv + 'px ' + bsb + 'px ' + bss + 'px ' + bsc;
+        delete but.sty['box-shadow-type'];
+        delete but.sty['box-shadow-color'];
+        delete but.sty['box-shadow-horizontal'];
+        delete but.sty['box-shadow-vertical'];
+        delete but.sty['box-shadow-blur'];
+        delete but.sty['box-shadow-spread'];
+    }
+
+    var tsc, tsh, tsv, tsb;
+    if((tsc = but.sty['text-shadow-color']) &&
+        (tsh = but.sty['text-shadow-horizontal']) &&
+        (tsv = but.sty['text-shadow-vertical']) &&
+        (tsb = but.sty['text-shadow-blur'])){
+        but.sty['text-shadow'] = tsh + 'px ' + tsv + 'px ' + tsb + 'px ' + tsc;
+        delete but.sty['text-shadow-color'];
+        delete but.sty['text-shadow-horizontal'];
+        delete but.sty['text-shadow-vertical'];
+        delete but.sty['text-shadow-blur'];
+    }
+
+
+
+    // combine border styles
+    var border_style, border_color, border_width;
+    if((border_style = but.sty['border-style']) &&
+        (border_color = but.sty['border-color']) &&
+        (border_width = but.sty['border-width'])){
+        but.sty['border'] = border_style + ' ' +  border_color + ' ' + border_width + 'px';
+        delete but.sty['border-style'];
+        delete but.sty['border-color'];
+        delete but.sty['border-width'];
+    }
+
+
+    // combine border styles
+    var border_style_hover, border_color_hover, border_width_hover;
+    if((border_style_hover = but.sty['border-style-hover']) &&
+        (border_color_hover = but.sty['border-color-hover']) &&
+        (border_width_hover = but.sty['border-width-hover'])){
+
+        but.styHovMark += but.renLine('border', border_style_hover + ' ' +  border_color_hover + ' ' + border_width_hover + 'px');
+        delete but.sty['border-style-hover'];
+        delete but.sty['border-color-hover'];
+        delete but.sty['border-width-hover'];
+    }
+
+
+    if ($("input[id=Switch_border]:checked").val() == 1)
+    {
+        $('#hideSlide_border').show();
+        $('#showDisabledBorder').hide();
+    }
+    else {
+        $('#hideSlide_border').hide();
+        delete but.sty['border'];
+        delete but.sty['border-left'];
+        delete but.sty['border-right'];
+        delete but.sty['border-bottom'];
+        delete but.sty['border-top'];
+        delete but.sty['border-style'];
+        delete but.sty['border-color'];
+        delete but.sty['border-width'];
+        $('#showDisabledBorder').show();
+    }
+
+    if ($("input[id=Switch_textShadow]:checked").val() == 1) {
+        $('#hideSlide_textShadow').show();
+        $('#showDisabledTextShadow').hide();
+
+    } else {
+        $('#hideSlide_textShadow').hide();
+        delete but.sty['text-shadow'];
+
+        $('#showDisabledTextShadow').show();
+    }
+
+
+    if ($("input[id=Switch_boxShadow]:checked").val() == 1) {
+        $('#hideSlide_boxShadow').show();
+        $('#showDisabledBoxShadow').hide();
+    } else {
+        $('#hideSlide_boxShadow').hide();
+        delete but.sty['box-shadow'];
+        delete but.sty['-webkit-box-shadow'];
+        delete but.sty['-moz-box-shadow'];
+        $('#showDisabledBoxShadow').show();
+    }
+
+
+    delete but.sty['undefined'];
+
+}
+
+but.genCode = function()
+{
+
+
+    // gradients
+    var gradient_start, gradient_end;
+    if((gradient_start = but.sty['bg-start-gradient']) &&
+        (gradient_end = but.sty['bg-end-gradient'])){
+        but.styMark += but.renLine('background', gradient_start);
+        but.styMark += but.renLine('background-image', '-webkit-linear-gradient(top, ' + gradient_start + ', ' + gradient_end + ')');
+        but.styMark += but.renLine('background-image', '-moz-linear-gradient(top, ' + gradient_start + ', ' + gradient_end + ')');
+        but.styMark += but.renLine('background-image', '-ms-linear-gradient(top, ' + gradient_start + ', ' + gradient_end + ')');
+        but.styMark += but.renLine('background-image', '-o-linear-gradient(top, ' + gradient_start + ', ' + gradient_end + ')');
+        but.styMark += but.renLine('background-image', 'linear-gradient(to bottom, ' + gradient_start + ', ' + gradient_end + ')');
+        delete but.sty['bg-start-gradient'];
+        delete but.sty['bg-end-gradient'];
+        delete but.sty['bg-color'];
+    }
+
+    // gradient hovers
+    var gradient_hover_start, gradient_hover_end;
+    if((gradient_hover_start = but.sty['bg-start-gradient-hover']) && (gradient_hover_end = but.sty['bg-end-gradient-hover'])){
+        but.styHovMark += but.renLine('background', gradient_hover_start);
+        but.styHovMark += but.renLine('background-image', '-webkit-linear-gradient(top, ' + gradient_hover_start + ', ' + gradient_hover_end + ')');
+        but.styHovMark += but.renLine('background-image', '-moz-linear-gradient(top, ' + gradient_hover_start + ', ' + gradient_hover_end + ')');
+        but.styHovMark += but.renLine('background-image', '-ms-linear-gradient(top, ' + gradient_hover_start + ', ' + gradient_hover_end + ')');
+        but.styHovMark += but.renLine('background-image', '-o-linear-gradient(top, ' + gradient_hover_start + ', ' + gradient_hover_end + ')');
+        but.styHovMark += but.renLine('background-image', 'linear-gradient(to bottom, ' + gradient_hover_start + ', ' + gradient_hover_end + ')');
+        delete but.sty['bg-start-gradient-hover'];
+        delete but.sty['bg-end-gradient-hover'];
+        delete but.sty['background-hover'];
+    }
+
+
+    var border_color_hover;
+    if((border_color_hover = but.sty['border-color-hover'])){
+        but.styHovMark += but.renLine('border-color', border_color_hover);
+        //delete but.sty['border-color-hover'];
+    }
+
+
+    var border_radius;
+    if((border_radius = but.sty['border-radius'])){
+        but.styMark += but.renLine('-webkit-border-radius', border_radius + 'px');
+        but.styMark += but.renLine('-moz-border-radius', border_radius + 'px');
+        but.styMark += but.renLine('border-radius', border_radius);
+        delete but.sty['border-radius'];
+    }
+
+
+
+    var border_radius_hover;
+    if((border_radius_hover = but.sty['border-radius-hover'])){
+        but.styHovMark += but.renLine('-webkit-border-radius', border_radius_hover + 'px');
+        but.styHovMark += but.renLine('-moz-border-radius', border_radius_hover + 'px');
+        but.styHovMark += but.renLine('border-radius', border_radius_hover);
+        delete but.sty['border-radius-hover'];
+    }
+
+
+    var height;
+    if((height = but.sty['height'])){
+        but.styMark += but.renLine('height', height);
+        but.styMark += but.renLine('line-height', height);
+        delete but.sty['height'];
+    }
+
+    var color;
+    if((color = but.sty['color'])){
+        but.styMark += but.renLine('color', color);
+        delete but.sty['color'];
+    }
+
+    $.each(but.sty, function(cssProp, cssVal)
+    {
+        var pxV = $.inArray(cssProp, but.pix) > -1 ? 'px' : '';
+        var tab = '&nbsp;&nbsp;';
+   //     if(cssProp == 'background-hover'){
+   //         but.styHovMark = but.renLine('background', cssVal);
+   //     }else{
+            but.styMark += but.renLine(cssProp, cssVal);
+   //     }
+    });
+
+    but.styMark += but.renLine('text-decoration', 'none');
+    but.styMark += but.renLine('display', 'inline-block');
+    but.styMark += but.renLine('cursor', 'pointer');
+    but.styMark += but.renLine('text-align', 'center');
+
+    customCSS = $('#custom_css').val();
+    customCSSHover = $('#custom_css_hover').val();
+
+    if (customCSS){
+        but.styMark += customCSS + "\n";
+    }
+
+
+    but.styMark = '.'+classText+' {\n' + but.styMark + '}';
+    if ($("input[id=Switch_hover]:checked").val() == 1)
+    {
+        but.styHovMark += but.renLine('text-decoration', 'none');
+        if (customCSSHover){
+            but.styHovMark += customCSSHover + "\n";
+        }
+
+        but.styHovMark = '\n\n.'+classText+':hover {\n' + but.styHovMark + '}';
+    } else {
+        but.styHovMark = "";
+    }
+
+    //but.styActMark += but.renLine('position', 'relative');
+    //but.styActMark += but.renLine('top', '1px');
+    //but.styActMark = '\n\n.'+classText+':active {\n' + but.styActMark + '}';
+
+
+
+}
+
+
+but.update = function()
+{
+    but.prepCode();
+    but.genCode();
+    but.renSty();
+
+}
+
+but.renSty = function()
+{
+    var output = but.styMark + but.styHovMark; // + but.styActMark;
+    var styTag = '<style id="button_css" type="text/css">' + output + '</style>';
+    $('#generated_css').html(output);
+
+    var htmlOutput = "<a href=\"#\" class=\"" + classText + "\"></a>";
+
+    $('#generated_html').val(htmlOutput);
+
+
+    //$('#generatedPage').html(output);
+    // $('#nicecode').html(output);
+    var styTag = styTag.replace('.' + classText, ".generated_button");
+    var styTag = styTag.replace('.' + classText + ':hover', ".generated_button:hover");
+    $('#button_css').replaceWith(styTag);
+
+}
+
+
+but.renLine = function(cssProp, cssVal){
+    var pxV = $.inArray(cssProp, but.pix) > -1 ? 'px' : '';
+    var tab = '&nbsp;&nbsp;&nbsp;';
+    return tab + cssProp + ': ' + cssVal + pxV + ';\n';
+}
+
+but.update();
+
+
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    for( var i=0; i < 3; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
+function importButton() {
+    importedCSS = $('#import_css').val();
+
+    // importedCSSArray = importedCSS.toArray();
+
+    //var extract = importedCSSArray.match(/{(.*)}/).pop();
+
+    hover = false;
+    boxShadowDone = false;
+
+    var lines = importedCSS.split('\n');
+    for(var i = 0;i < lines.length;i++){
+
+        if (lines[i].includes(".")) {
+            if (lines[i].startsWith(".")) {
+                className = lines[i].replace(/[^A-Za-z0-9]/g, '');
+                className = className.replace("hover", '');
+
+
+
+                if (hover == false){
+                    $("#class_text").val(className).change();
+                }
+            }
+        }
+
+        if (lines[i].includes(":hover")) {
+            hover = true;
+        }
+
+        if (lines[i].includes("font-size")) {
+            fontSizePX = lines[i].match(/\d/g);
+            fontSizePX = fontSizePX.join("");
+            $("#fontSizePX").val(fontSizePX).change();
+        }
+        // background gradients
+        if (hover == false) {
+            if (lines[i].includes("background-image:")) {
+                backgroundGradientColors = lines[i].match(/\(([^)]+)\)/)[1];
+                backgroundGradientColors = backgroundGradientColors.split(",");
+                topColor = backgroundGradientColors[1].trim();
+                bottomColor = backgroundGradientColors[2].trim();
+                // topColor = topColor.trim();
+                // bottomColor = bottomColor.trim();
+                $('#bg-start-gradient').val(topColor);
+                $('#bg-start-gradient').css("background-color", topColor);
+                $('#bg-end-gradient').val(bottomColor);
+                $('#bg-end-gradient').css("background-color", bottomColor);
+
+                $('#background-type-gradient').trigger('click');
+            }
+
+            // see if background-color exists, if it does, set solid color
+            if (lines[i].includes("background-color:")) {
+                $('#background-type-solid').trigger('click');
+                backgroundColor = lines[i];
+                backgroundColor = backgroundColor.replace("background-color:", '');
+                backgroundColor = backgroundColor.trim();
+                backgroundColor = backgroundColor.replace(";", '');
+
+console.log("backgroundColor");
+console.log(backgroundColor);
+
+                $('#bg-color').val(backgroundColor);
+                $('#bg-color').css("background-color", backgroundColor);
+
+            }
+
+            if (lines[i].includes("text-shadow:")) {
+                textShadow = lines[i].trim();
+
+
+                textShadow = textShadow.replace("text-shadow:", '');
+                textShadow = textShadow.trim();
+                textShadow = textShadow.replace("px", '');
+                textShadow = textShadow.replace("px", '');
+                textShadow = textShadow.replace("px", '');
+                textShadow = textShadow.replace(";", '');
+                textShadow = textShadow.split(" ");
+
+                console.log("textShadow");
+                console.log(textShadow);
+                $('#textShadowHorizontal').val(textShadow[0]).change();
+                $('#textShadowVertical').val(textShadow[1]).change();
+                $('#textShadowBlur').val(textShadow[2]).change();
+                $('#textShadowColor').val(textShadow[3]);
+                $('#textShadowColor').css("background-color", textShadow[3]);
+            }
+
+
+            if (lines[i].includes("border:")) {
+                border = lines[i].trim();
+
+
+                border = border.replace("border:", '');
+                border = border.trim();
+                border = border.replace("px", '');
+                border = border.replace(";", '');
+                border = border.split(" ");
+
+                console.log("border");
+                console.log(border);
+                $('#border-style').val(border[0]).change();
+                $('#border-width').val(border[2]).change();
+                $('#borderColor').val(border[1]);
+                $('#borderColor').css("background-color", border[1]);
+            }
+
+            if (lines[i].includes("box-shadow:") && boxShadowDone == false) {
+                boxShadow = lines[i].trim();
+
+
+                boxShadow = boxShadow.replace("box-shadow:", '');
+                boxShadow = boxShadow.trim();
+                boxShadow = boxShadow.replace("px", '');
+                boxShadow = boxShadow.replace("px", '');
+                boxShadow = boxShadow.replace("px", '');
+                boxShadow = boxShadow.replace("px", '');
+                boxShadow = boxShadow.replace(";", '');
+                boxShadow = boxShadow.split(" ");
+
+                console.log("boxShadow");
+                console.log(boxShadow);
+
+                if (boxShadow[5]){
+                    $('#boxShadowHorizontal').val(boxShadow[1]).change();
+                    $('#boxShadowVertical').val(boxShadow[2]).change();
+                    $('#boxShadowBlur').val(boxShadow[3]).change();
+                    $('#boxShadowSpread').val(boxShadow[4]).change();
+                    $('#boxShadowColor').val(boxShadow[5]);
+                    $('#boxShadowColor').css("background-color", boxShadow[5]);
+                    $('#box-shadow-type-2').trigger('click');
+                } else {
+                    $('#boxShadowHorizontal').val(boxShadow[0]).change();
+                    $('#boxShadowVertical').val(boxShadow[1]).change();
+                    $('#boxShadowBlur').val(boxShadow[2]).change();
+                    $('#boxShadowSpread').val(boxShadow[3]).change();
+                    $('#boxShadowColor').val(boxShadow[4]);
+                    $('#boxShadowColor').css("background-color", boxShadow[4]);
+
+                    $('#box-shadow-type-1').trigger('click');
+
+                }
+
+
+                boxShadowDone = true;
+            }
+        }
+        if (hover == true) {
+            if (lines[i].includes("background-image:")) {
+                backgroundGradientColors = lines[i].match(/\(([^)]+)\)/)[1];
+                backgroundGradientColors = backgroundGradientColors.split(",");
+                topColor = backgroundGradientColors[1].trim();
+                bottomColor = backgroundGradientColors[2].trim();
+                // topColor = topColor.trim();
+                // bottomColor = bottomColor.trim();
+                $('#bg-start-gradient-hover').val(topColor);
+                $('#bg-start-gradient-hover').css("background-color", topColor);
+                $('#bg-end-gradient-hover').val(bottomColor);
+                $('#bg-end-gradient-hover').css("background-color", bottomColor);
+
+                $('#background-type-gradient-hover').trigger('click');
+            }
+        }
+
+        // see if background-color exists, if it does, set solid color
+        if (lines[i].includes("background-color:")) {
+            $('#background-type-solid-hover').trigger('click');
+            backgroundColorHover = lines[i];
+            backgroundColorHover = backgroundColorHover.replace("background-color:", '');
+            backgroundColorHover = backgroundColorHover.trim();
+            backgroundColorHover = backgroundColorHover.replace(";", '');
+
+            $('#bg-color-hover').val(backgroundColorHover);
+            $('#bg-color-hover').css("background-color", backgroundColorHover);
+
+        }
+
+        if (lines[i].includes("width:")) {
+
+            $('#button-size-type-2').trigger('click');
+            buttonWidth = lines[i].match(/\d/g);
+            buttonWidth = buttonWidth.join("");
+            $("#widthPX").val(buttonWidth).change();
+        }
+
+
+        if (lines[i].includes("height:")) {
+
+            //$('#button-size-type-2').trigger('click');
+            buttonHeight = lines[i].match(/\d/g);
+            buttonHeight = buttonHeight.join("");
+            $("#heightPX").val(buttonHeight).change();
+        }
+
+        if (lines[i].includes("font-weight")) {
+            fontWeight = lines[i].match(/\d/g);
+            fontWeight = fontWeight.join("");
+            $("#fontWeight").val(fontWeight).change();
+        }
+
+        if (lines[i].includes("border:")) {
+            border = lines[i].trim();
+
+
+            border = border.replace("border:", '');
+            border = border.trim();
+            border = border.replace("px", '');
+            border = border.replace(";", '');
+            border = border.split(" ");
+
+            console.log("border");
+            console.log(border);
+            $('#border-style-hover').val(border[0]).change();
+            $('#border-width-hover').val(border[2]).change();
+            $('#border-color-hover').val(border[1]);
+            $('#border-color-hover').css("background-color", border[1]);
+        }
+
+        if (lines[i].includes("border-radius")) {
+            borderRadius = lines[i].match(/\d/g);
+            borderRadius = borderRadius.join("");
+
+
+            if (hover == true){
+                $("#border-radius-hover").val(borderRadius).change();
+            } else {
+
+                $("#border-radius").val(borderRadius).change();
+            }
+
+        }
+
+        if (lines[i].includes("padding")) {
+            paddingPX = lines[i].match(/\d/g);
+            paddingPX = paddingPX.join("");
+            $("#paddingPX").val(paddingPX).change();
+        }
+        if (lines[i].includes("color:")) {
+
+            if (lines[i].toLowerCase().indexOf("background") == -1) {
+                textColor = lines[i].replace("color:","");
+                textColor = textColor.replace(" ","");
+                textColor = textColor.replace(" ","");
+                textColor = textColor.replace(";","");
+                textColor = textColor.trim();
+
+                //$('#textColor').css('color',textColor);
+                //$("#textColor").val(textColor).change();
+
+                $('#textColor').val(textColor);
+                //$('#textColor').trigger('change');
+                $('#textColor').css("background-color", textColor);
+
+            }
+
+
+        }
+
+    }
+
+
+    but.update();
+
+}
+
+
+function switchColors() {
+    startColor = $('#bg-start-gradient').val();
+    endColor = $('#bg-end-gradient').val();
+    $('#bg-start-gradient').val(endColor);
+    $('#bg-end-gradient').val(startColor);
+    $('#bg-start-gradient').css("background-color", endColor);
+    $('#bg-end-gradient').css("background-color", startColor);
+    but.update();
+}
+
+function switchHoverColors() {
+    startColor = $('#bg-start-gradient-hover').val();
+    endColor = $('#bg-end-gradient-hover').val();
+    $('#bg-start-gradient-hover').val(endColor);
+    $('#bg-end-gradient-hover').val(startColor);
+    $('#bg-start-gradient-hover').css("background-color", endColor);
+    $('#bg-end-gradient-hover').css("background-color", startColor);
+    but.update();
+}
+
+function importTemplate(template_slug) {
+
+
+    $.ajax({
+        type: 'GET',
+        url: 'api.php?type=get_css&slug='+template_slug,
+        data: { get_param: 'value' },
+        dataType: 'json',
+        success: function (data) {
+            $.each(data, function(index, element) {
+
+                console.log("importing");
+                console.log(element);
+
+                $('#import_css').val(element.template_css);
+                importButton();
+            });
+        }
+    });
+
+
+    but.update();
+}
+
+function copyGeneratedCSStoClipboard() {
+    console.log("copying generated css to clipboard");
+    $("#generated_css").select();
+    document.execCommand('copy');
+}
